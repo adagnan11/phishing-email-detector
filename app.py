@@ -21,7 +21,7 @@ y = df["label"]
 TfidfVectorizer(max_features=500, stop_words="english")
 X_tfidf = vectorizer.fit_transform(X)
 
-LogisticRegression(max_iter=200)
+LogisticRegression(max_iter=100)
 model.fit(X_tfidf, y)
 
 print("Model trained successfully")
