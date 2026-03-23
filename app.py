@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request
 import pickle
 import re
-
+from preprocessing import clean_text
 app = Flask(__name__)
 #==============================
 import os
@@ -12,9 +12,9 @@ if not os.path.exists("model.pkl"):
 
     if os.path.exists("model.zip"):
         with zipfile.ZipFile("model.zip", "r") as zip_ref:
-            zip_ref.extractall()
+            zip_ref.extractall(".")  # <-- FIXED
     else:
-        print("ERROR: model.zip not found!")
+        raise Exception("model.zip not found!")
 # ===============================
 # LOAD TRAINED MODEL + VECTORIZER
 # ===============================
