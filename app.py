@@ -7,37 +7,24 @@ app = Flask(__name__)
 # ===============================
 # LOAD TRAINED MODEL + VECTORIZER
 # ===============================
-import os
+import pandas as pd
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.linear_model import LogisticRegression
 
-if os.path.exists("model.pkl") and os.path.exists("vectorizer.pkl"):
-    print("Loading existing model...")
-    
-    with open("model.pkl", "rb") as f:
-        model = pickle.load(f)
+print("Training model...")
 
-    with open("vectorizer.pkl", "rb") as f:
-        vectorizer = pickle.load(f)
+df = pd.read_csv("small_phishing_email.csv")
 
-else:
-    print("Model not found. Training new model...")
+X = df["text_combined"].astype(str)
+y = df["label"]
 
-    import pandas as pd
-    from sklearn.feature_extraction.text import TfidfVectorizer
-    from sklearn.linear_model import LogisticRegression
+vectorizer = TfidfVectorizer(max_features=5000, stop_words="english")
+X_tfidf = vectorizer.fit_transform(X)
 
-    df = pd.read_csv("small_phishing_email.csv")
+model = LogisticRegression(max_iter=1000)
+model.fit(X_tfidf, y)
 
-    X = df["text_combined"].astype(str)
-    y = df["label"]
-
-    vectorizer = TfidfVectorizer(max_features=5000, stop_words="english")
-    X_tfidf = vectorizer.fit_transform(X)
-
-    model = LogisticRegression(max_iter=1000)
-    model.fit(X_tfidf, y)
-
-    print("Model trained successfully")
-
+print("Model trained successfully")
 # ===============================
 # SAME CLEANING FUNCTION
 # ===============================
