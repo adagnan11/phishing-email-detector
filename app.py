@@ -7,35 +7,13 @@ app = Flask(__name__)
 # ===============================
 # LOAD TRAINED MODEL + VECTORIZER
 # ===============================
-import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.linear_model import LogisticRegression
+import pickle
 
-print("Training model...")
+with open("model.pkl", "rb") as f:
+    model = pickle.load(f)
 
-df = pd.read_csv("small_phishing_email.csv")
-
-X = df["text_combined"].astype(str)
-y = df["label"]
-
-TfidfVectorizer(max_features=500, stop_words="english")
-X_tfidf = vectorizer.fit_transform(X)
-
-LogisticRegression(max_iter=100)
-model.fit(X_tfidf, y)
-
-print("Model trained successfully")
-# ===============================
-# SAME CLEANING FUNCTION
-# ===============================
-def clean_text(text):
-    text = text.lower()
-    text = re.sub(r"http\S+|www\S+", " ", text)
-    text = re.sub(r"<.*?>", " ", text)
-    text = re.sub(r"[^a-z\s]", " ", text)
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
-
+with open("vectorizer.pkl", "rb") as f:
+    vectorizer = pickle.load(f)
 
 # ===============================
 # ROUTES
