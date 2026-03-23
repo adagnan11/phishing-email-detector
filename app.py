@@ -31,11 +31,11 @@ with open("vectorizer.pkl", "rb") as f:
 # ===============================
 @app.route("/", methods=["GET", "POST"])
 def index():
-    try:
-        prediction = None
-        probability = None
-        flags = None
+    prediction = None
+    probability = None
+    flags = None
 
+    try:
         if request.method == "POST":
             email_text = request.form["email"]
 
@@ -53,10 +53,12 @@ def index():
 
             probability = round(prob * 100, 2)
 
-        return render_template("index.html",
-                               prediction=prediction,
-                               probability=probability,
-                               flags=flags)
+        return render_template(
+            "index.html",
+            prediction=prediction,
+            probability=probability,
+            flags=flags
+        )
 
     except Exception as e:
         return f"ERROR: {str(e)}"
