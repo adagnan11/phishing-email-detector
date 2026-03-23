@@ -60,12 +60,5 @@ def index():
             flags=flags
         )
 
-   except Exception as e:
-    return f"ERROR: {str(e)}"
-
-
-import os
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    except Exception as e:
+        return f"ERROR: {str(e)}"
