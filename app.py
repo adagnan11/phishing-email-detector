@@ -7,14 +7,12 @@ app = Flask(__name__)
 import os
 import zipfile
 
-if not os.path.exists("model.pkl"):
-    print("Extracting model.zip...")
+try:
+    if not os.path.exists("model.pkl"):
+        print("Extracting model.zip...")
 
-    if os.path.exists("model.zip"):
-        with zipfile.ZipFile("model.zip", "r") as zip_ref:
-            zip_ref.extractall(".")  # <-- FIXED
-    else:
-        raise Exception("model.zip not found!")
+        if os.path.exists("model.zip"):
+           
 # ===============================
 # LOAD TRAINED MODEL + VECTORIZER
 # ===============================
