@@ -18,10 +18,10 @@ df = pd.read_csv("small_phishing_email.csv")
 X = df["text_combined"].astype(str)
 y = df["label"]
 
-vectorizer = TfidfVectorizer(max_features=5000, stop_words="english")
+TfidfVectorizer(max_features=1000, stop_words="english")
 X_tfidf = vectorizer.fit_transform(X)
 
-model = LogisticRegression(max_iter=1000)
+LogisticRegression(max_iter=200)
 model.fit(X_tfidf, y)
 
 print("Model trained successfully")
