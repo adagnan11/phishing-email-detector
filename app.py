@@ -3,7 +3,11 @@ import pickle
 import re
 
 app = Flask(__name__)
+#==============================
+import zipfile
 
+with zipfile.ZipFile("model.zip", "r") as zip_ref:
+    zip_ref.extractall()
 # ===============================
 # LOAD TRAINED MODEL + VECTORIZER
 # ===============================
