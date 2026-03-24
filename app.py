@@ -25,7 +25,7 @@ def clean_text(text):
 def index():
     prediction = None
     probability = None
-    flags = None
+    flags = []
 
     try:
         if request.method == "POST":
@@ -35,34 +35,43 @@ def index():
             vectorized = vectorizer.transform([cleaned])
 
             prob = model.predict_proba(vectorized)[0][1]
-# ===============================
-# SMART FEATURES (NEW)
-# ===============================
-url_flag = ("http" in email_text.lower()) or ("www" in email_text.lower())
 
-urgent_words = ["urgent", "verify", "password", "account", "login", "bank"]
-keyword_hits = [word for word in urgent_words if word in cleaned]
+            # ===============================
+            # SMART FEATURES
+            # ===============================
+            url_flag = ("http" in email_text.lower()) or ("www" in email_text.lower())
 
-risk_score = prob
+            urgent_words = ["urgent", "verify", "password", "account", "login", "bank"]
+            keyword_hits = [word for word in urgent_words if word in cleaned]
 
-if url_flag:
-    risk_score += 0.2
+            risk_score = prob
 
-if len(keyword_hits) >= 2:
-    risk_score += 0.2
+            if url_flag:
+                risk_score += 0.2
 
-# ===============================
-# NEW PREDICTION LOGIC
-# ===============================
-if risk_score >= 0.7:
-    prediction = "🚨 High Risk Phishing"
-elif risk_score >= 0.4:
-    prediction = "⚠️ Suspicious Email"
-else:
-    prediction = "✅ Legitimate Email"
+            if len(keyword_hits) >= 2:
+                risk_score += 0.2
 
-probability = round(prob * 100, 2)
+            # ===============================
+            # PREDICTION
+            # ===============================
+            if risk_score >= 0.7:
+                prediction = "🚨 High Risk Phishing"
+            elif risk_score >= 0.4:
+                prediction = "⚠️ Suspicious Email"
+            else:
+                prediction = "✅ Legitimate Email"
 
+            probability = round(prob * 100, 2)
+
+            # ===============================
+            # FLAGS (EXPLANATION)
+            # ===============================
+            if url_flag:
+                flags.append("Contains suspicious link")
+
+            for word in keyword_hits:
+                flags.append(f"Contains keyword: '{word}'")
 
         return render_template(
             "index.html",
@@ -73,8 +82,3 @@ probability = round(prob * 100, 2)
 
     except Exception as e:
         return f"ERROR: {str(e)}"
-
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
