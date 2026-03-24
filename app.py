@@ -36,14 +36,34 @@ def index():
 
             prob = model.predict_proba(vectorized)[0][1]
 
-            threshold = 0.4
+# ===============================
+# SMART FEATURES (NEW)
+# ===============================
+url_flag = ("http" in email_text.lower()) or ("www" in email_text.lower())
 
-            if prob >= threshold:
-                prediction = "⚠️ Phishing Email"
-            else:
-                prediction = "✅ Legitimate Email"
+urgent_words = ["urgent", "verify", "password", "account", "login", "bank"]
+keyword_hits = [word for word in urgent_words if word in cleaned]
 
-            probability = round(prob * 100, 2)
+risk_score = prob
+
+if url_flag:
+    risk_score += 0.2
+
+if len(keyword_hits) >= 2:
+    risk_score += 0.2
+
+# ===============================
+# NEW PREDICTION LOGIC
+# ===============================
+if risk_score >= 0.7:
+    prediction = "🚨 High Risk Phishing"
+elif risk_score >= 0.4:
+    prediction = "⚠️ Suspicious Email"
+else:
+    prediction = "✅ Legitimate Email"
+
+probability = round(prob * 100, 2)
+
 
         return render_template(
             "index.html",
