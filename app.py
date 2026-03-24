@@ -2,31 +2,25 @@ from flask import Flask, render_template, request
 import pickle
 import re
 import os
-import zipfile
 
 app = Flask(__name__)
 
-# ==============================
-# EXTRACT MODEL IF NEEDED
-# ==============================
-
-if not os.path.exists("model.pkl"):
-    print("Extracting model.zip...")
-    with zipfile.ZipFile("model.zip", "r") as zip_ref:
-        zip_ref.extractall()
-# ==============================
-# LOAD MODEL + VECTORIZER
-# ==============================
-
+# LOAD MODEL
 with open("model.pkl", "rb") as f:
     model = pickle.load(f)
 
 with open("vectorizer.pkl", "rb") as f:
     vectorizer = pickle.load(f)
 
-# ===============================
-# ROUTES
-# ===============================
+# CLEAN TEXT
+def clean_text(text):
+    text = text.lower()
+    text = re.sub(r"http\S+|www\S+", " ", text)
+    text = re.sub(r"<.*?>", " ", text)
+    text = re.sub(r"[^a-z\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
 @app.route("/", methods=["GET", "POST"])
 def index():
     prediction = None
@@ -60,3 +54,8 @@ def index():
 
     except Exception as e:
         return f"ERROR: {str(e)}"
+
+
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
