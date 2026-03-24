@@ -1,20 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Phishing Detector</title>
+    <title>Phishing Email Detector</title>
+    <style>
+        body {
+            font-family: Arial;
+            background: #0f172a;
+            color: white;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #38bdf8;
+        }
+
+        textarea {
+            width: 60%;
+            height: 150px;
+            border-radius: 10px;
+            padding: 10px;
+            border: none;
+            outline: none;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background: #38bdf8;
+            color: black;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+    </style>
 </head>
+
 <body>
 
-<h2>Phishing Email Detector</h2>
+<h1>🔐 Phishing Email Detector</h1>
 
 <form method="POST">
-    <textarea name="email" rows="10" cols="50" placeholder="Paste email here"></textarea><br><br>
-    <button type="submit">Check</button>
+    <textarea name="email" placeholder="Paste email here..."></textarea><br>
+    <button type="submit">Analyze</button>
 </form>
 
 {% if prediction %}
-    <h3>{{ prediction }}</h3>
-    <p>Confidence: {{ probability }}%</p>
+    <div class="result">
+        <p>{{ prediction }}</p>
+        <p>Confidence: {{ probability }}%</p>
+    </div>
 {% endif %}
 
 </body>
