@@ -35,7 +35,6 @@ def index():
             vectorized = vectorizer.transform([cleaned])
 
             prob = model.predict_proba(vectorized)[0][1]
-
 # ===============================
 # SMART FEATURES (NEW)
 # ===============================
